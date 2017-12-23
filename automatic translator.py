@@ -15,18 +15,18 @@ def RecordAudio(Audio_output_path):
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 16000
-    RECORD_SECONDS = 2
+    RECORD_SECONDS = 1
     Audio_output_path = Audio_output_path
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT, channels = CHANNELS, rate = RATE,
                     input = True, frames_per_buffer = CHUNK)
     
-    print("* recording")
+    #print("* recording")
     frames = []
     for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
         data = stream.read(CHUNK)
         frames.append(data)
-    print("* done recoding")
+    #print("* done recoding")
     stream.stop_stream()
     stream.close()
     p.terminate()
@@ -42,28 +42,29 @@ def main():
     file_path = './record voice/detectvoice.wav'     
     fs = 16000
     detect = 0
+    threshold = 1
     while(detect!=1):
         RecordAudio(file_path)
         fs, detectvoice = wavfile.read('./record voice/detectvoice.wav')
         detectvoice = detectvoice / (2.**15)
         Energy_sum = sum(detectvoice**2)
         print(Energy_sum)
-        if(Energy_sum>100):
+        if(Energy_sum > threshold):
             detect = 1
         else:
             detect = 0
     print("* start recoding")    
     
     stop = 0
-    recordvoice = 0
+    recordvoice = detectvoice
     while(stop!=1):
         RecordAudio(file_path)
         fs, detectvoice = wavfile.read('./record voice/detectvoice.wav')
         detectvoice = detectvoice / (2.**15)
         Energy_sum = sum(detectvoice**2)
-        print(Energy_sum)
+        #print(Energy_sum)
         recordvoice = np.hstack((recordvoice,detectvoice))
-        if(Energy_sum<100):
+        if(Energy_sum < threshold):
             stop = 1
         else:
             stop = 0
