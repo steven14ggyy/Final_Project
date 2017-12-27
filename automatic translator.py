@@ -103,7 +103,7 @@ def FindLanguage(Record_File_Path):
     gg = D_en[-1,-1]
     ggg = D_jp[-1,-1]
     Shortest_D = min(D_ch[-1,-1], D_en[-1,-1], D_jp[-1,-1])
-    playsound(Record_File_Path)
+    #playsound(Record_File_Path)
     if(Shortest_D==D_ch[-1,-1]):
         playsound(Response_File_Path+'language_response_ch.wav')
     elif(Shortest_D==D_en[-1,-1]):
