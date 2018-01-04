@@ -103,6 +103,7 @@ def FindTime(Language_code):
     hour = today.hour
     minute = today.minute
     second = today.second
+    print(hour,minute,second)
     if(Language_code==0):
         playsound(Response_File_Path+'Now_ch.wav')   
         if(hour>19):
@@ -110,23 +111,29 @@ def FindTime(Language_code):
         if(hour>9):
             playsound(Response_File_Path+'10_response_ch.wav')
         if(hour%10!=0):
-            playsound(Response_File_Path+str(hour%10)+'_response_ch.wav') 
+            playsound(Response_File_Path+str(hour%10)+'_response_ch.wav')
+        if(hour==0):
+            playsound(Response_File_Path+'0_response_ch.wav') 
         playsound(Response_File_Path+'hour_ch.wav')
         
-        if(minute>20):
-            playsound(Response_File_Path+str(minute/10)+'_response_ch.wav') 
+        if(minute>19):
+            playsound(Response_File_Path+str(int(minute/10))+'_response_ch.wav') 
         if(minute>9):
             playsound(Response_File_Path+'10_response_ch.wav')
         if(minute%10!=0):
-            playsound(Response_File_Path+str(hour%10)+'_response_ch.wav') 
+            playsound(Response_File_Path+str(minute%10)+'_response_ch.wav')
+        if(minute==0):
+            playsound(Response_File_Path+'0_response_ch.wav') 
         playsound(Response_File_Path+'minute_ch.wav')
         
-        if(second>20):
-            playsound(Response_File_Path+str(second/10)+'_response_ch.wav') 
+        if(second>19):
+            playsound(Response_File_Path+str(int(minute/10))+'_response_ch.wav') 
         if(second>9):
             playsound(Response_File_Path+'10_response_ch.wav')
         if(second%10!=0):
             playsound(Response_File_Path+str(second%10)+'_response_ch.wav') 
+        if(second==0):
+            playsound(Response_File_Path+'0_response_ch.wav') 
         playsound(Response_File_Path+'second_ch.wav')
         
     elif(Language_code==1):
@@ -148,8 +155,8 @@ def FindTime(Language_code):
                 playsound(Response_File_Path+'30_response_en.wav') 
             elif(minute>19):
                 playsound(Response_File_Path+'20_response_en.wav') 
-            if(hour%10!=0):
-                    playsound(Response_File_Path+str(hour%10)+'_response_en.wav') 
+            if(minute%10!=0):
+                    playsound(Response_File_Path+str(minute%10)+'_response_en.wav') 
         else:        
             playsound(Response_File_Path+str(hour)+'_response_en.wav') 
     else:
@@ -159,19 +166,21 @@ def FindTime(Language_code):
         if(hour>9):
             playsound(Response_File_Path+'10_response_jp.wav')
         if(hour%10!=0):
-            playsound(Response_File_Path+str(hour%10)+'_response_jp.wav') 
+            playsound(Response_File_Path+str(hour%10)+'_response_jp.wav')
+        if(hour==0):
+            playsound(Response_File_Path+'0_response_jp.wav') 
         playsound(Response_File_Path+'hour_jp.wav')
         
-        if(minute>20):
-            playsound(Response_File_Path+str(minute/10)+'_response_jp.wav') 
+        if(minute>19):
+            playsound(Response_File_Path+str(int(minute/10))+'_response_jp.wav') 
         if(minute>9):
             playsound(Response_File_Path+'10_response_jp.wav')
         if(minute%10!=0):
-            playsound(Response_File_Path+str(hour%10)+'_response_jp.wav') 
+            playsound(Response_File_Path+str(minute%10)+'_response_jp.wav') 
         playsound(Response_File_Path+'minute_jp.wav')
         
         if(second>20):
-            playsound(Response_File_Path+str(second/10)+'_response_jp.wav') 
+            playsound(Response_File_Path+str(int(second/10))+'_response_jp.wav') 
         if(second>9):
             playsound(Response_File_Path+'10_response_jp.wav')
         if(second%10!=0):
@@ -226,17 +235,10 @@ def main():
     
     #FindLanguage(Record_File_Path)
 
-    today = datetime.datetime.now()
-    year = today.year
-    month = today.month
-    day = today.day
-    hour = today.hour
-    minute = today.minute
-    second = today.second
-    Response_File_Path = './response voice data/'
-    playsound(Response_File_Path+'hour_ch.wav')
+    #Response_File_Path = './response voice data/'
+    #playsound(Response_File_Path+'hour_ch.wav')
     e = 1
-    #FindTime(0)
+    FindTime(2)
             
 if __name__ == '__main__':
 	main()
