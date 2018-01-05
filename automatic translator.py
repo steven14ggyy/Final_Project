@@ -8,6 +8,7 @@ import wave
 import math
 import scipy.io.wavfile
 import datetime
+import time
 # =============================================================================
 # Additional Package
 # =============================================================================
@@ -29,8 +30,7 @@ def RecordAudio(Audio_output_path):
     Audio_output_path = Audio_output_path
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT, channels = CHANNELS, rate = RATE,
-                    input = True, frames_per_buffer = CHUNK)
-    
+                    input = True, frames_per_buffer = CHUNK)   
     #print("* recording")
     frames = []
     for i in range(0, int(RATE/CHUNK*RECORD_SECONDS)):
@@ -52,7 +52,6 @@ def DetectSound(Record_File_Path):
     fs = 16000
     detect = 0
     threshold = 0.5
-    
     while(detect!=1):
         RecordAudio(file_path)
         fs, detectvoice = wavfile.read(file_path)
@@ -85,17 +84,73 @@ def DetectSound(Record_File_Path):
     f.setframerate(fs)
     f.writeframes(wave_data.tostring())
     f.close()
+
 def FindLanguage(Record_File_Path, Language_code):
     Response_File_Path = './response voice data/'
     if(Language_code==0):
         playsound(Response_File_Path+'language_response_ch.wav')
+        time.sleep(0.5)
+        playsound(Response_File_Path+'language_select_ch.wav')
+        char_append = 'ch'
     elif(Language_code==1):
         playsound(Response_File_Path+'language_response_en.wav')
+        time.sleep(0.5)
+        playsound(Response_File_Path+'language_select_en.wav')
+        char_append = 'en'
     else:
         playsound(Response_File_Path+'language_response_jp.wav')
-    e = 1
-    Record_File_Path = './record voice/recordvoice_num.wav'
+        time.sleep(0.5)
+        playsound(Response_File_Path+'language_select_jp.wav')
+        char_append = 'jp'
+        
     DetectSound(Record_File_Path)
+    Compare_File_Path = './comparing voice data/'
+    Language_test, fs0 = lib.load(Record_File_Path)
+    MFCC_test = lib.feature.mfcc(y=Language_test, sr=fs0, n_mfcc=20)
+    
+    
+    if(Language_code==0):
+        Language_en_ch, fs1 = lib.load(Compare_File_Path + 'language_en_ch.wav')
+        Language_jp_ch, fs2 = lib.load(Compare_File_Path + 'language_jp_ch.wav')
+        MFCC_lang_en_ch = lib.feature.mfcc(y=Language_en_ch, sr=fs1, n_mfcc=20)
+        MFCC_lang_jp_ch = lib.feature.mfcc(y=Language_jp_ch, sr=fs2, n_mfcc=20)
+        D_lang_en_ch, wp_en_ch = lib.dtw(MFCC_test, MFCC_lang_en_ch)
+        D_lang_jp_ch, wp_jp_ch = lib.dtw(MFCC_test, MFCC_lang_jp_ch)
+        compare1 = D_lang_en_ch[-1, -1]
+        compare2 = D_lang_jp_ch[-1, -1]
+        if(compare1<compare2):
+            translate_lang = 1
+        else:
+            translate_lang = 2
+    elif(Language_code==1):
+        Language_ch_en, fs1 = lib.load(Compare_File_Path + 'language_ch_en.wav')
+        Language_jp_en, fs2 = lib.load(Compare_File_Path + 'language_jp_en.wav')
+        MFCC_lang_ch_en = lib.feature.mfcc(y=Language_ch_en, sr=fs1, n_mfcc=20)
+        MFCC_lang_jp_en = lib.feature.mfcc(y=Language_jp_en, sr=fs2, n_mfcc=20)
+        D_lang_ch_en, wp_ch_en = lib.dtw(MFCC_test, MFCC_lang_ch_en)
+        D_lang_jp_en, wp_jp_en = lib.dtw(MFCC_test, MFCC_lang_jp_en)
+        compare1 = D_lang_ch_en[-1, -1]
+        compare2 = D_lang_jp_en[-1, -1]
+        if(compare1<compare2):
+            translate_lang = 0
+        else:
+            translate_lang = 2
+    else:
+        Language_ch_jp, fs1 = lib.load(Compare_File_Path + 'language_ch_jp.wav')
+        Language_en_jp, fs2 = lib.load(Compare_File_Path + 'language_en_jp.wav')
+        MFCC_lang_ch_jp = lib.feature.mfcc(y=Language_ch_jp, sr=fs1, n_mfcc=20)
+        MFCC_lang_en_jp = lib.feature.mfcc(y=Language_en_jp, sr=fs2, n_mfcc=20)
+        D_lang_ch_jp, wp_ch_jp = lib.dtw(MFCC_test, MFCC_lang_ch_jp)
+        D_lang_en_jp, wp_en_jp = lib.dtw(MFCC_test, MFCC_lang_en_jp)
+        compare1 = D_lang_ch_jp[-1, -1]
+        compare2 = D_lang_en_jp[-1, -1]
+        if(compare1<compare2):
+            translate_lang = 0
+        else:
+            translate_lang = 1
+        
+    playsound(Response_File_Path+'say_number_'+char_append+'.wav')
+    #TranslateNumber(Language_code, translate_lang)
     
 def FindTime(Language_code):  
     Response_File_Path = './response voice data/'
@@ -114,8 +169,7 @@ def FindTime(Language_code):
             playsound(Response_File_Path+str(hour%10)+'_response_ch.wav')
         if(hour==0):
             playsound(Response_File_Path+'0_response_ch.wav') 
-        playsound(Response_File_Path+'hour_ch.wav')
-        
+        playsound(Response_File_Path+'hour_ch.wav')    
         if(minute>19):
             playsound(Response_File_Path+str(int(minute/10))+'_response_ch.wav') 
         if(minute>9):
@@ -124,10 +178,9 @@ def FindTime(Language_code):
             playsound(Response_File_Path+str(minute%10)+'_response_ch.wav')
         if(minute==0):
             playsound(Response_File_Path+'0_response_ch.wav') 
-        playsound(Response_File_Path+'minute_ch.wav')
-        
+        playsound(Response_File_Path+'minute_ch.wav')      
         if(second>19):
-            playsound(Response_File_Path+str(int(minute/10))+'_response_ch.wav') 
+            playsound(Response_File_Path+str(int(second/10))+'_response_ch.wav') 
         if(second>9):
             playsound(Response_File_Path+'10_response_ch.wav')
         if(second%10!=0):
@@ -137,8 +190,7 @@ def FindTime(Language_code):
         playsound(Response_File_Path+'second_ch.wav')
         
     elif(Language_code==1):
-        playsound(Response_File_Path+'Now_en.wav')
-        
+        playsound(Response_File_Path+'Now_en.wav')       
         if(hour>19):
             playsound(Response_File_Path+'20_response_en.wav')
             if(hour%10!=0):
@@ -158,7 +210,7 @@ def FindTime(Language_code):
             if(minute%10!=0):
                     playsound(Response_File_Path+str(minute%10)+'_response_en.wav') 
         else:        
-            playsound(Response_File_Path+str(hour)+'_response_en.wav') 
+            playsound(Response_File_Path+str(minute)+'_response_en.wav') 
     else:
         playsound(Response_File_Path+'Now_jp.wav')
         if(hour>19):
@@ -211,9 +263,6 @@ def FindTask(Record_File_Path):
     D_time_en, wp_en = lib.dtw(MFCC_test, MFCC_time_en)
     D_time_jp, wp_jp = lib.dtw(MFCC_test, MFCC_time_jp)
     
-    g = D_lang_ch[-1,-1]
-    gg = D_lang_en[-1,-1]
-    ggg = D_lang_jp[-1,-1]
     Shortest_D = min(D_lang_ch[-1,-1], D_lang_en[-1,-1], D_lang_jp[-1,-1], D_time_ch[-1,-1], D_time_en[-1,-1], D_time_jp[-1,-1])
     if(Shortest_D==D_lang_ch[-1,-1]):
         FindLanguage(Record_File_Path, 0)
@@ -229,17 +278,10 @@ def FindTask(Record_File_Path):
         FindTime(2)
     
 def main():
-    #Record_File_Path = './record voice/recordvoice.wav'
-    #DetectSound(Record_File_Path)
-    #FindTask(Record_File_Path)
-    
-    #FindLanguage(Record_File_Path)
-
-    #Response_File_Path = './response voice data/'
-    #playsound(Response_File_Path+'hour_ch.wav')
-    e = 1
-    FindTime(2)
-            
+    while(1):
+        Record_File_Path = './record voice/recordvoice.wav'
+        DetectSound(Record_File_Path)
+        FindTask(Record_File_Path)
 if __name__ == '__main__':
 	main()
     
