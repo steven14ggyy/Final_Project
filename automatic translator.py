@@ -9,14 +9,29 @@ import math
 import scipy.io.wavfile
 import datetime
 import time
+from scipy.signal import butter, lfilter, freqz
 # =============================================================================
 # Additional Package
 # =============================================================================
 from playsound import playsound
+
+def butter_lowpass(cutoff, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    return b, a
+
+
+def butter_lowpass_filter(data, cutoff, fs, order=5):
+    b, a = butter_lowpass(cutoff, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
+
+
 # =============================================================================
 # Pre-emphasis
 # =============================================================================
-def pre_emphasis(signal,coefficient=0.97):
+def pre_emphasis(signal,coefficient=0.95):
     return np.append(signal[0],signal[1:]-coefficient*signal[:-1])
 # =============================================================================
 # Record function
@@ -51,7 +66,7 @@ def DetectSound(Record_File_Path):
     file_path = './record voice/detectvoice.wav'     
     fs = 16000
     detect = 0
-    threshold = 0.5
+    threshold = 0.6
     while(detect!=1):
         RecordAudio(file_path)
         fs, detectvoice = wavfile.read(file_path)
@@ -84,6 +99,95 @@ def DetectSound(Record_File_Path):
     f.setframerate(fs)
     f.writeframes(wave_data.tostring())
     f.close()
+
+def TranslateNumber(MotherLan, TransLan, Record_File_Path):
+    DetectSound(Record_File_Path)
+    Response_File_Path = './response voice data/'
+    if MotherLan == 0:
+        MotherLanAppend = 'ch'
+    elif MotherLan == 1:
+        MotherLanAppend = 'en'
+    elif MotherLan == 2:
+        MotherLanAppend = 'jp'
+        
+    if TransLan == 0:
+        TransLanAppend = 'ch'
+    elif TransLan == 1:
+        TransLanAppend = 'en'
+    elif TransLan == 2:
+        TransLanAppend = 'jp'
+        
+    Language_test, fs = lib.load(Record_File_Path)
+    compare0, fs0 = lib.load(Response_File_Path + '0_response_' + MotherLanAppend + '.wav')
+    compare1, fs1 = lib.load(Response_File_Path + '1_response_' + MotherLanAppend + '.wav')
+    compare2, fs2 = lib.load(Response_File_Path + '2_response_' + MotherLanAppend + '.wav')
+    compare3, fs3 = lib.load(Response_File_Path + '3_response_' + MotherLanAppend + '.wav')
+    compare4, fs4 = lib.load(Response_File_Path + '4_response_' + MotherLanAppend + '.wav')
+    compare5, fs5 = lib.load(Response_File_Path + '5_response_' + MotherLanAppend + '.wav')
+    compare6, fs6 = lib.load(Response_File_Path + '6_response_' + MotherLanAppend + '.wav')
+    compare7, fs7 = lib.load(Response_File_Path + '7_response_' + MotherLanAppend + '.wav')
+    compare8, fs8 = lib.load(Response_File_Path + '8_response_' + MotherLanAppend + '.wav')
+    compare9, fs9 = lib.load(Response_File_Path + '9_response_' + MotherLanAppend + '.wav')
+    plt.plot(Language_test)
+    plt.show()
+    
+    Language_test = pre_emphasis(signal = Language_test)
+    plt.plot(Language_test)
+    plt.show()
+    
+    Language_test = butter_lowpass_filter(Language_test, 1000, fs, 6)
+    plt.plot(Language_test)
+    plt.show()
+    
+    test = Language_test
+    
+#    test = []    
+#    for i in range(len(Language_test)-1):
+#        if not((Language_test[i] < 0.005 and Language_test[i] > -0.005) and (Language_test[i+1] < 0.005 and Language_test[i+1] > -0.005)):
+#            test = np.hstack((test,Language_test[i]))
+            
+    plt.plot(test)
+    plt.show()
+    
+    D_compare0, wp_0 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare0), sr=fs0, n_mfcc=30))
+    D_compare1, wp_1 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare1), sr=fs1, n_mfcc=30))
+    D_compare2, wp_2 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare2), sr=fs2, n_mfcc=30))
+    D_compare3, wp_3 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare3), sr=fs3, n_mfcc=30))
+    D_compare4, wp_4 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare4), sr=fs4, n_mfcc=30))
+    D_compare5, wp_5 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare5), sr=fs5, n_mfcc=30))
+    D_compare6, wp_6 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare6), sr=fs6, n_mfcc=30))
+    D_compare7, wp_7 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare7), sr=fs7, n_mfcc=30))
+    D_compare8, wp_8 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare8), sr=fs8, n_mfcc=30))
+    D_compare9, wp_9 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare9), sr=fs9, n_mfcc=30))
+        
+    Shortest_D = min(D_compare0[-1,-1], D_compare1[-1,-1],\
+                     D_compare2[-1,-1], D_compare3[-1,-1],\
+                     D_compare4[-1,-1], D_compare5[-1,-1],\
+                     D_compare6[-1,-1], D_compare7[-1,-1],\
+                     D_compare8[-1,-1], D_compare9[-1,-1])
+        
+    if Shortest_D == D_compare0[-1,-1]: 
+        playsound(Response_File_Path+'0_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare1[-1,-1]:
+        playsound(Response_File_Path+'1_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare2[-1,-1]:
+        playsound(Response_File_Path+'2_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare3[-1,-1]:
+        playsound(Response_File_Path+'3_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare4[-1,-1]:
+        playsound(Response_File_Path+'4_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare5[-1,-1]:
+        playsound(Response_File_Path+'5_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare6[-1,-1]:
+        playsound(Response_File_Path+'6_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare7[-1,-1]:
+        playsound(Response_File_Path+'7_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare8[-1,-1]:
+        playsound(Response_File_Path+'8_response_' + TransLanAppend + '.wav')
+    elif Shortest_D == D_compare9[-1,-1]:
+        playsound(Response_File_Path+'9_response_' + TransLanAppend + '.wav')  
+                    
+    return D_compare0[-1,-1], D_compare1[-1,-1], D_compare2[-1,-1], D_compare3[-1,-1], D_compare4[-1,-1], D_compare5[-1,-1], D_compare6[-1,-1], D_compare7[-1,-1], D_compare8[-1,-1], D_compare9[-1,-1]
 
 def FindLanguage(Record_File_Path, Language_code):
     Response_File_Path = './response voice data/'
@@ -150,7 +254,7 @@ def FindLanguage(Record_File_Path, Language_code):
             translate_lang = 1
         
     playsound(Response_File_Path+'say_number_'+char_append+'.wav')
-    #TranslateNumber(Language_code, translate_lang)
+    TranslateNumber(Language_code, translate_lang, Record_File_Path)
     
 def FindTime(Language_code):  
     Response_File_Path = './response voice data/'
@@ -277,11 +381,12 @@ def FindTask(Record_File_Path):
     else:
         FindTime(2)
     
-def main():
-    while(1):
-        Record_File_Path = './record voice/recordvoice.wav'
-        DetectSound(Record_File_Path)
-        FindTask(Record_File_Path)
-if __name__ == '__main__':
-	main()
+
+#    while(1):
+#        Record_File_Path = './record voice/recordvoice.wav'
+#        DetectSound(Record_File_Path)
+#        FindTask(Record_File_Path)
+Record_File_Path = './record voice/recordvoice.wav'
+a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
+
     
