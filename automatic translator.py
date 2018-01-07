@@ -128,16 +128,16 @@ def TranslateNumber(MotherLan, TransLan, Record_File_Path):
     compare7, fs7 = lib.load(Response_File_Path + '7_response_' + MotherLanAppend + '.wav')
     compare8, fs8 = lib.load(Response_File_Path + '8_response_' + MotherLanAppend + '.wav')
     compare9, fs9 = lib.load(Response_File_Path + '9_response_' + MotherLanAppend + '.wav')
-    plt.plot(Language_test)
-    plt.show()
+#    plt.plot(Language_test)
+#    plt.show()
     
     Language_test = pre_emphasis(signal = Language_test)
-    plt.plot(Language_test)
-    plt.show()
+#    plt.plot(Language_test)
+#    plt.show()
     
-    Language_test = butter_lowpass_filter(Language_test, 1000, fs, 6)
-    plt.plot(Language_test)
-    plt.show()
+#    Language_test = butter_lowpass_filter(Language_test, 1000, fs, 6)
+#    plt.plot(Language_test)
+#    plt.show()
     
     test = Language_test
     
@@ -146,19 +146,19 @@ def TranslateNumber(MotherLan, TransLan, Record_File_Path):
 #        if not((Language_test[i] < 0.005 and Language_test[i] > -0.005) and (Language_test[i+1] < 0.005 and Language_test[i+1] > -0.005)):
 #            test = np.hstack((test,Language_test[i]))
             
-    plt.plot(test)
-    plt.show()
+#    plt.plot(test)
+#    plt.show()
     
-    D_compare0, wp_0 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare0), sr=fs0, n_mfcc=30))
-    D_compare1, wp_1 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare1), sr=fs1, n_mfcc=30))
-    D_compare2, wp_2 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare2), sr=fs2, n_mfcc=30))
-    D_compare3, wp_3 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare3), sr=fs3, n_mfcc=30))
-    D_compare4, wp_4 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare4), sr=fs4, n_mfcc=30))
-    D_compare5, wp_5 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare5), sr=fs5, n_mfcc=30))
-    D_compare6, wp_6 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare6), sr=fs6, n_mfcc=30))
-    D_compare7, wp_7 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare7), sr=fs7, n_mfcc=30))
-    D_compare8, wp_8 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare8), sr=fs8, n_mfcc=30))
-    D_compare9, wp_9 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=pre_emphasis(signal=compare9), sr=fs9, n_mfcc=30))
+    D_compare0, wp_0 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare0, sr=fs0, n_mfcc=30))
+    D_compare1, wp_1 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare1, sr=fs1, n_mfcc=30))
+    D_compare2, wp_2 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare2, sr=fs2, n_mfcc=30))
+    D_compare3, wp_3 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare3, sr=fs3, n_mfcc=30))
+    D_compare4, wp_4 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare4, sr=fs4, n_mfcc=30))
+    D_compare5, wp_5 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare5, sr=fs5, n_mfcc=30))
+    D_compare6, wp_6 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare6, sr=fs6, n_mfcc=30))
+    D_compare7, wp_7 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare7, sr=fs7, n_mfcc=30))
+    D_compare8, wp_8 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare8, sr=fs8, n_mfcc=30))
+    D_compare9, wp_9 = lib.dtw(lib.feature.mfcc(y=test, sr=fs, n_mfcc=30), lib.feature.mfcc(y=compare9, sr=fs9, n_mfcc=30))
         
     Shortest_D = min(D_compare0[-1,-1], D_compare1[-1,-1],\
                      D_compare2[-1,-1], D_compare3[-1,-1],\
@@ -210,7 +210,7 @@ def FindLanguage(Record_File_Path, Language_code):
     DetectSound(Record_File_Path)
     Compare_File_Path = './comparing voice data/'
     Language_test, fs0 = lib.load(Record_File_Path)
-    MFCC_test = lib.feature.mfcc(y=Language_test, sr=fs0, n_mfcc=20)
+    MFCC_test = lib.feature.mfcc(y=pre_emphasis(signal = Language_test), sr=fs0, n_mfcc=20)
     
     
     if(Language_code==0):
@@ -360,12 +360,33 @@ def FindTask(Record_File_Path):
     MFCC_time_ch = lib.feature.mfcc(y=Time_ch, sr=fs4, n_mfcc=20)
     MFCC_time_en = lib.feature.mfcc(y=Time_en, sr=fs5, n_mfcc=20)
     MFCC_time_jp = lib.feature.mfcc(y=Time_jp, sr=fs6, n_mfcc=20)
-    D_lang_ch, wp_ch = lib.dtw(MFCC_test, MFCC_lang_ch)
-    D_lang_en, wp_en = lib.dtw(MFCC_test, MFCC_lang_en)
-    D_lang_jp, wp_jp = lib.dtw(MFCC_test, MFCC_lang_jp)
-    D_time_ch, wp_ch = lib.dtw(MFCC_test, MFCC_time_ch)
-    D_time_en, wp_en = lib.dtw(MFCC_test, MFCC_time_en)
-    D_time_jp, wp_jp = lib.dtw(MFCC_test, MFCC_time_jp)
+    D_lang_ch, wp_lang_ch = lib.dtw(MFCC_test, MFCC_lang_ch)
+    D_lang_en, wp_lang_en = lib.dtw(MFCC_test, MFCC_lang_en)
+    D_lang_jp, wp_lang_jp = lib.dtw(MFCC_test, MFCC_lang_jp)
+    D_time_ch, wp_time_ch = lib.dtw(MFCC_test, MFCC_time_ch)
+    D_time_en, wp_time_en = lib.dtw(MFCC_test, MFCC_time_en)
+    D_time_jp, wp_time_jp = lib.dtw(MFCC_test, MFCC_time_jp)
+    
+#    D1 = D_lang_ch[wp_lang_ch[-1, 0], wp_lang_ch[-1, 1]]
+#    D2 = D_lang_en[wp_lang_en[-1, 0], wp_lang_en[-1, 1]]
+#    D3 = D_lang_jp[wp_lang_jp[-1, 0], wp_lang_jp[-1, 1]]
+#    D4 = D_time_ch[wp_time_ch[-1, 0], wp_time_ch[-1, 1]]
+#    D5 = D_time_en[wp_time_en[-1, 0], wp_time_en[-1, 1]]
+#    D6 = D_time_jp[wp_time_jp[-1, 0], wp_time_jp[-1, 1]]
+#    
+#    Shortest_D = min(D1, D2, D3, D4, D5, D6)
+#    if(Shortest_D==D1):
+#        FindLanguage(Record_File_Path, 0)
+#    elif(Shortest_D==D2):
+#        FindLanguage(Record_File_Path, 1)
+#    elif(Shortest_D==D3):
+#        FindLanguage(Record_File_Path, 2)
+#    elif(Shortest_D==D4):
+#        FindTime(0)
+#    elif(Shortest_D==D5):
+#        FindTime(1)
+#    elif(Shortest_D==D6):
+#        FindTime(2)
     
     Shortest_D = min(D_lang_ch[-1,-1], D_lang_en[-1,-1], D_lang_jp[-1,-1], D_time_ch[-1,-1], D_time_en[-1,-1], D_time_jp[-1,-1])
     if(Shortest_D==D_lang_ch[-1,-1]):
@@ -378,15 +399,14 @@ def FindTask(Record_File_Path):
         FindTime(0)
     elif(Shortest_D==D_time_en[-1,-1]):
         FindTime(1)
-    else:
+    elif(Shortest_D==D_time_jp[-1,-1]):
         FindTime(2)
     
-
-#    while(1):
-#        Record_File_Path = './record voice/recordvoice.wav'
-#        DetectSound(Record_File_Path)
-#        FindTask(Record_File_Path)
 Record_File_Path = './record voice/recordvoice.wav'
-a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
+#while(1):
+#    DetectSound(Record_File_Path)
+#    FindTask(Record_File_Path)
+while(1):
+    a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
 
     
