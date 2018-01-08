@@ -403,10 +403,10 @@ def FindTask(Record_File_Path):
         FindTime(2)
     
 Record_File_Path = './record voice/recordvoice.wav'
-#while(1):
-#    DetectSound(Record_File_Path)
-#    FindTask(Record_File_Path)
 while(1):
-    a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
+    DetectSound(Record_File_Path)
+    FindTask(Record_File_Path)
+#while(1):
+    #a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
 
     
