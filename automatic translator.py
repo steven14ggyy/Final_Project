@@ -407,6 +407,10 @@ while(1):
     DetectSound(Record_File_Path)
     FindTask(Record_File_Path)
 #while(1):
+<<<<<<< HEAD
 #    a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
+=======
+    #a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
+>>>>>>> e97205b9fb5a186b21e525a2e42cc6e202ea5620
 
     
