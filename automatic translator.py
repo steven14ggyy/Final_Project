@@ -66,7 +66,7 @@ def DetectSound(Record_File_Path):
     file_path = './record voice/detectvoice.wav'     
     fs = 16000
     detect = 0
-    threshold = 0.6
+    threshold = 1
     while(detect!=1):
         RecordAudio(file_path)
         fs, detectvoice = wavfile.read(file_path)
@@ -403,10 +403,10 @@ def FindTask(Record_File_Path):
         FindTime(2)
     
 Record_File_Path = './record voice/recordvoice.wav'
-#while(1):
-#    DetectSound(Record_File_Path)
-#    FindTask(Record_File_Path)
 while(1):
-    a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
+    DetectSound(Record_File_Path)
+    FindTask(Record_File_Path)
+#while(1):
+#    a0, a1, a2, a3, a4, a5, a6, a7, a8, a9 = TranslateNumber(0, 1, Record_File_Path)
 
     
